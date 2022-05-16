@@ -84,16 +84,72 @@
        (pack)
        (map (fn [[x & tail :as el]] (list x (count el))))))
 
-(encode '(a a a a b c c a a d e e e e))
+;; Problem 11: Modified run-length encoding.
 
-;; Problem 11 : Modified run-length encoding.
+(defn pair-simplifier
+   [[x num]]
+  (if (>= num 2 )
+    (list x num)
+    x))
 
 (defn encode-modified
   [xs]
   (->> xs
-       (pack)
-       (map (fn [[x & tail :as el]]
-              (let [length (count el)]
-                (if (>= length 2)
-                  (list x length)
-                  x))))))
+       (encode)
+       (map pair-simplifier)))
+
+(encode-modified '(a a a a b c c a a d e e e e))
+
+;; Problem 12: Decode a run-length encoded list.
+
+(defn decode
+  [xs]
+  (->> xs
+       (map (fn [el] (if (seq? el)
+                       (take (second el) (first el))
+                       (list el))))
+       (flatten)))
+
+;; Problem 13: Run-length encoding of a list (direct solution).
+
+(defn count-repetition
+  [el [[x numb] & rests :as xs]]
+  (if (= el x )
+    (cons (list el (inc numb)) rests)
+    (cons (list el 1) xs)))
+
+(defn pack-dir
+  [[x & tail :as xs]]
+  (if (empty? tail)
+    '()
+    (count-repetition x (pack-dir tail))))
+
+(defn pack-updated
+  [xs]
+  (->> xs
+       (pack-dir)
+       (map pair-simplifier)))
+
+;; Problem 14: Duplicate the elements of a list.
+
+(defn duplicate
+  [xs]
+  (->> xs
+       (map (fn [el] (take 2 (repeat el))))
+       (flatten)))
+
+;; Problem 15: Replicate the elements of a list a given number of times.
+
+(defn repli
+  [xs n]
+  (->> xs
+       (map (fn [el] (take n (repeat el))))
+       (flatten)))
+
+;; We can also use replicate, from clojure.core
+
+(defn repli-core
+  [xs n]
+  (->> xs
+       (map (partial replicate n))
+       (flatten)))
