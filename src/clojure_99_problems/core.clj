@@ -61,3 +61,39 @@
                  (if-not (= value p) (cons value part-res) part-res))
                '())
        (reverse)))
+
+;; Problem 09: Pack consecutive duplicates of list elements into sublists.
+
+(defn pack-an-element
+  [el [[x & tail :as ys] & rests :as xs]]
+  (if (= el x )
+    (cons (cons el ys) rests)
+    (cons (list el) xs)))
+
+(defn pack
+  [[x & tail :as xs]]
+  (if (empty? tail)
+    '()
+    (pack-an-element x (pack tail))))
+
+;; Problem 10: Run-length encoding of a list.
+
+(defn encode
+  [xs]
+  (->> xs
+       (pack)
+       (map (fn [[x & tail :as el]] (list x (count el))))))
+
+(encode '(a a a a b c c a a d e e e e))
+
+;; Problem 11 : Modified run-length encoding.
+
+(defn encode-modified
+  [xs]
+  (->> xs
+       (pack)
+       (map (fn [[x & tail :as el]]
+              (let [length (count el)]
+                (if (>= length 2)
+                  (list x length)
+                  x))))))
