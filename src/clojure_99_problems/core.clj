@@ -153,3 +153,82 @@
   (->> xs
        (map (partial replicate n))
        (flatten)))
+
+;; Problem 16: Drop every N'th element from a list.
+
+(defn drop
+  [xs n]
+  (->> xs
+       (reduce (fn [[partial-list counter] value]
+                 (if (= 0 (mod counter n))
+                   (list partial-list (inc counter))
+                   (list (conj partial-list value) (inc counter))))
+               (list [] 1))
+       (first)
+       (apply list)))
+
+;; Problem 17: Split a list into two parts; the length of the first part is given.
+
+(defn deep-cons
+  [el [x & tail :as xs]]
+  (cons (cons el x) tail))
+
+(defn split
+  [[x & tail :as xs] n]
+  (if (= 0 n)
+    (list (list) xs)
+    (deep-cons x (split tail (dec n)))))
+
+;; Problem 18: Extract a slice from a list.
+
+(defn slice
+  [xs n m]
+  (first (split (second (split xs (dec n))) (inc (- m n)))))
+
+(slice '(a b c d e f g h i k) 3 7)
+
+;; Problem 19: Rotate a list N places to the left.
+
+(defn rotate
+  [xs n]
+  (let [length (count xs)
+        m (mod (+ length n) length)
+        splitted-list (split xs m)
+        first-segment (first splitted-list)
+        second-segment (second splitted-list)]
+    (concat second-segment first-segment)))
+
+;; Problem 20: Remove the K'th element from a list.
+
+(defn remove-at
+  [xs n]
+  (let [splitted-list (split xs (dec n))
+        first-segment (first splitted-list)
+        second-segment (rest (second splitted-list))]
+     (concat first-segment second-segment)))
+
+;; Problem 21: Insert an element at a given position into a list.
+
+(defn insert-at
+  [el xs n]
+  (let [splitted-list (split xs (dec n))
+        first-segment (first splitted-list)
+        second-segment (cons el (second splitted-list))]
+    (concat first-segment second-segment)))
+
+;; Problem 22: Create a list containing all integers within a given range.
+
+(defn list-builder
+  [init fin op]
+  (if (= init fin)
+    (list fin)
+    (cons init (list-builder (op init) fin op))))
+
+(defmulti my-range (fn [init fin]
+                     (if (<= init fin)
+                       :inc
+                       :dec)))
+
+(defmethod my-range :inc [init fin] (list-builder init fin inc))
+
+(defmethod my-range :dec [init fin] (list-builder init fin dec))
