@@ -205,7 +205,7 @@
   (let [splitted-list (split xs (dec n))
         first-segment (first splitted-list)
         second-segment (rest (second splitted-list))]
-     (concat first-segment second-segment)))
+    (concat first-segment second-segment)))
 
 ;; Problem 21: Insert an element at a given position into a list.
 
@@ -232,3 +232,28 @@
 (defmethod my-range :inc [init fin] (list-builder init fin inc))
 
 (defmethod my-range :dec [init fin] (list-builder init fin dec))
+
+;; Problem 23: Extract a given number of randomly selected elements from a list.
+
+(defn rnd-select
+  [xs n]
+  (->> (list xs '())
+       (iterate (fn [[xs part-res]]
+                  (let [len (dec (count xs))
+                        rand-pos (inc (rand-int len))]
+                    (list (remove-at xs rand-pos) (cons (element-at xs rand-pos) part-res)))))
+       (take (inc n))
+       (last)
+       (second)))
+
+;; Problem 24: Lotto: Draw N different random numbers from the set 1..M.
+
+(defn lotto-select
+  [n m]
+  (rnd-select (my-range 1 m) n))
+
+;; Problem 25: Generate a random permutation of the elements of a list.
+
+(defn rnd-permu
+  [xs]
+  (rnd-select xs (count xs)))
