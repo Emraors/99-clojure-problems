@@ -20,7 +20,7 @@
 
 (defn element-at
   [[x & tail :as xs] n]
-  (if (= n 1)
+  (if (= n 0)
     x
     (element-at tail (dec n))))
 
@@ -257,3 +257,16 @@
 (defn rnd-permu
   [xs]
   (rnd-select xs (count xs)))
+
+;; Problem 26: Generate the combinations of K distinct objects chosen from the N
+;; elements of a list.
+
+(defn combinations
+  [[x & tail :as xs] n]
+    (if (= n 0)
+        (list [])
+        (if (empty? tail)
+        (list [])
+        (let [with-x (map (fn [el] (cons x el)) (combinations tail (dec n)))
+                without-x (combinations tail n)]
+            (concat with-x without-x)))))
