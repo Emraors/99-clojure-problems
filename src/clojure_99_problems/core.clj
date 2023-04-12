@@ -270,3 +270,10 @@
         (let [with-x (map (fn [el] (cons x el)) (combinations tail (dec n)))
                 without-x (combinations tail n)]
             (concat with-x without-x)))))
+
+;; Problem 27: Group the elements of a set into disjoint subsets.
+;; TODO
+
+;; Problem 28: Sorting a list of lists according to length of sublists.
+
+(defn length-sort [xs] (sort-by count xs))

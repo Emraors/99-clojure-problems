@@ -1,6 +1,11 @@
 (ns clojure-99-problems.core-test
   (:require [clojure.test :refer :all]
-            [clojure-99-problems.core :refer :all]))
+            [clojure-99-problems.core :refer :all]
+            [clojure.spec.alpha :as s]
+            [clojure.spec.test.alpha :as stest]
+            [clojure.test.check.clojure-test :refer [defspec]]
+            [clojure.test.check.generators :as gen]
+            [clojure.test.check.properties :as prop]))
 
 ;; Test problem 01: Find the last element of a list
 
@@ -29,6 +34,38 @@
     (is (= 1 (element-at [1 2 3] 0)))
   (testing "element-at with empty list"
     (is (= nil (element-at [] 0))))))
+
+;; Test problem 04: Find the number of elements of a list
+
+(deftest test-lenght
+  (testing "lenght of empty list"
+    (is (= 0 (length []))))
+  (testing "lenght of a list"
+    (is (= 3 (length [1 2 3])))))
+
+;; Test problem 05: Reverse a list
+
+(defspec test-reverse 100
+  (prop/for-all [list (gen/vector gen/int)]
+    (= list (my-reverse (my-reverse list)))))
+
+
+
+;; Test problem 28: Sorting a list of lists according to length of sublists
+
+(deftest test-lsort
+  (testing "lsort"
+    (is (= (length-sort [[1 2 3] [1 2] [1 2 3 4 5] [1 2 3 4]])
+           [[1 2] [1 2 3] [1 2 3 4] [1 2 3 4 5]])))
+  (testing "lsort with empty list"
+    (is (= (length-sort []) []))))
+
+
+(defspec test-lsort 100
+  (prop/for-all [list-of-lists (gen/vector (gen/vector gen/int))]
+    (let [sorted-list (length-sort list-of-lists)]
+      (every? (fn [[x y]] (<= (count x) (count y))) (partition 2 sorted-list)))))
+
 
 
 (run-tests)
