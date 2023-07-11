@@ -39,15 +39,36 @@
 
 (deftest test-lenght
   (testing "lenght of empty list"
-    (is (= 0 (length []))))
+    (is (= 0 (my-length []))))
   (testing "lenght of a list"
-    (is (= 3 (length [1 2 3])))))
+    (is (= 3 (my-length [1 2 3])))))
 
 ;; Test problem 05: Reverse a list
 
 (defspec test-reverse 100
+  (prop/for-all [list (gen/list gen/int)]
+    (= list (my-reverse (my-reverse list)))))
+
+
+;; Test problem 6: Find out whether a list is a palindrome
+
+
+(defspec test-palindrome 100
   (prop/for-all [list (gen/vector gen/int)]
     (= list (my-reverse (my-reverse list)))))
+
+;; Test problem 7: Flatten a nested list structure
+
+(defspec test-flatten 100
+  (prop/for-all [list (gen/list (gen/list gen/int))]
+    (= (flatten list) (my-flatten list))))
+
+;; Test problem 8: Eliminate consecutive duplicates of list elements
+
+(defspec test-compress 100
+  (prop/for-all [list (gen/list gen/int)]
+    (>= (count list) (count (compress list)))))
+
 
 
 

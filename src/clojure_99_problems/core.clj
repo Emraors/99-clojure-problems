@@ -26,31 +26,18 @@
 
 ;; Problem 04: Find the number of elements of a list.
 
-(defn length
-  [[x & tail :as xs]]
-  (if (empty? xs)
-    0
-    (+ 1 (length tail))))
+(defn my-length [xs] (reduce (fn [counter _] (inc counter)) 0 xs))
 
 ;; Problem 05: Reverse a list.
-
-(defn my-reverse
-  [xs]
-  (reduce (fn [part-res value] (cons value part-res)) '() xs))
+(defn my-reverse [xs] (reduce conj '() xs))
 
 ;; Problem 06: Find out whether a list is a palindrome.
 
-(defn is-palindrome?
-  [xs]
-  (= xs (my-reverse xs)))
+(defn is-palindrome? [xs] (= xs (my-reverse xs)))
 
 ;; Problem 07: Flatten a nested list structure.
 
-(defn my-flatten
-  [[x & tail :as xs]]
-  (cond (empty? xs) nil
-        (seq? x) (concat (my-flatten x) (my-flatten tail))
-        :else (cons x (my-flatten tail))))
+(defn my-flatten [xs] (reduce concat '() xs))
 
 ;; Problem 08: Eliminate consecutive duplicates of list elements.
 
@@ -276,4 +263,5 @@
 
 ;; Problem 28: Sorting a list of lists according to length of sublists.
 
-(defn length-sort [xs] (sort-by count xs))
+(let [new-binding (defn length-sort [xs] (sort-by count xs))]
+  new-binding)
