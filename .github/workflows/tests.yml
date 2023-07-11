@@ -1,0 +1,27 @@
+name: Run Tests
+
+on:
+  push:
+    branches:
+      - main  # Change this to your repository's main branch name
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Java
+      uses: actions/setup-java@v2
+      with:
+        java-version: 1.11  # Adjust the Java version if needed
+
+    - name: Install Leiningen
+      run: |
+        wget -P $HOME/bin https://raw.githubusercontent.com/technomancy/leiningen/stable/bin/lein
+        chmod +x $HOME/bin/lein
+
+    - name: Run Tests
+      run: lein test
