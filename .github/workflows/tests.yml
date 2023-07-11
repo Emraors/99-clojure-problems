@@ -17,6 +17,7 @@ jobs:
       uses: actions/setup-java@v2
       with:
         java-version: 11  # Use a specific available version from the list
+        distribution: 'adopt'
 
     - name: Install Leiningen
       run: |
