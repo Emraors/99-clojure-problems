@@ -65,10 +65,43 @@
 
 ;; Test problem 8: Eliminate consecutive duplicates of list elements
 
-(defspec test-compress 100
+(defspec compress-can-only-reduce-list-lenght 100
   (prop/for-all [list (gen/list gen/int)]
     (>= (count list) (count (compress list)))))
 
+;; Test problem 9: Pack consecutive duplicates of list elements into sublists
+
+(defspec flatten-pack-gives-identity 100
+  (prop/for-all [list (gen/list gen/int)]
+    (= list (my-flatten (pack list)))))
+
+
+(defn all-equals? [list]
+  (apply = list))
+
+(defspec test-pack 100
+  (prop/for-all [list (gen/list gen/int)]
+    (let [packed-list (pack list)]
+      (every? #(all-equals? %) packed-list))))
+
+;; Test problem 10: Run-length encoding of a list
+
+(defspec decode-encode-gives-identity 100
+  (prop/for-all [list (gen/list gen/int)]
+    (= list (decode (encode list)))))
+
+;; Test problem 19: Rotate a list N places to the left
+
+(defspec rotate-is-associative 100
+  (prop/for-all [list (gen/list gen/int)
+                 n (gen/choose -1000 1000)
+                 m (gen/choose -1000 1000)]
+    (= (rotate list (+ n m)) (rotate (rotate list n) m))))
+
+
+(defspec rotate-lenght-is-identity 100
+  (prop/for-all [list (gen/list gen/int)]
+    (= list (rotate list (count list)))))
 
 
 

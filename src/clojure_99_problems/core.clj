@@ -51,17 +51,14 @@
 
 ;; Problem 09: Pack consecutive duplicates of list elements into sublists.
 
-(defn pack-an-element
-  [el [[x & tail :as ys] & rests :as xs]]
-  (if (= el x )
-    (cons (cons el ys) rests)
-    (cons (list el) xs)))
-
-(defn pack
-  [[x & tail :as xs]]
-  (if (empty? tail)
-    '()
-    (pack-an-element x (pack tail))))
+(defn pack [xs]
+  (->> xs
+       (reduce (fn [[p & tail :as part-res] value]
+                 (if (= value p)
+                   (cons value part-res)
+                   (cons (list value) part-res)))
+               '())
+       (reverse)))
 
 ;; Problem 10: Run-length encoding of a list.
 
@@ -89,12 +86,9 @@
 
 ;; Problem 12: Decode a run-length encoded list.
 
-(defn decode
-  [xs]
+(defn decode [xs]
   (->> xs
-       (map (fn [el] (if (seq? el)
-                       (take (second el) (first el))
-                       (list el))))
+       (map (fn [[x num]] (take num (repeat x))))
        (flatten)))
 
 ;; Problem 13: Run-length encoding of a list (direct solution).
@@ -178,12 +172,14 @@
 
 (defn rotate
   [xs n]
-  (let [length (count xs)
-        m (mod (+ length n) length)
-        splitted-list (split xs m)
-        first-segment (first splitted-list)
-        second-segment (second splitted-list)]
-    (concat second-segment first-segment)))
+  (if (empty? xs)
+    xs
+    (let [length (count xs)
+          m (mod (+ length n) length)
+          splitted-list (split xs m)
+          first-segment (first splitted-list)
+          second-segment (second splitted-list)]
+      (concat second-segment first-segment))))
 
 ;; Problem 20: Remove the K'th element from a list.
 
