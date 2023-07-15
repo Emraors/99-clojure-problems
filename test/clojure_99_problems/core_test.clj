@@ -103,22 +103,42 @@
   (prop/for-all [list (gen/list gen/int)]
     (= list (rotate list (count list)))))
 
+;; Test problem 20: Remove the K'th element from a list
+
+(defspec remove-decreses-lenght
+  (prop/for-all [list (gen/list gen/int)]
+    (prop/for-all [n (gen/choose 0 (count list))]
+      (>= (count list) (count (remove-at list n))))))
+
+;; Test problem 21: Insert an element at a given position into a list
+
+(defspec insert-at-increses-lenght
+  (prop/for-all [list (gen/list gen/int)]
+    (prop/for-all [n (gen/choose 0 (count list))]
+      (<= (count list) (count (insert-at list n 0))))))
+
+
+;;Combine both
+
+(defspec insert-at-remove-at-gives-identity
+  (prop/for-all [list (gen/list gen/int)]
+    (prop/for-all [n (gen/choose 0 (count list))]
+        (= list (remove-at (insert-at list n 0) n)))))
+
+(defspec remove-at-insert-at-gives-identity
+  (prop/for-all [list (gen/list gen/int)]
+    (prop/for-all [n (gen/choose 0 (count list))]
+        (let [elem (element-at list n)]
+          (= list (insert-at (remove-at list n) n elem))))))
 
 
 ;; Test problem 28: Sorting a list of lists according to length of sublists
 
-(deftest test-lsort
-  (testing "lsort"
-    (is (= (length-sort [[1 2 3] [1 2] [1 2 3 4 5] [1 2 3 4]])
-           [[1 2] [1 2 3] [1 2 3 4] [1 2 3 4 5]])))
-  (testing "lsort with empty list"
-    (is (= (length-sort []) []))))
-
-
 (defspec test-lsort 100
-  (prop/for-all [list-of-lists (gen/vector (gen/vector gen/int))]
+  (prop/for-all [list-of-lists (gen/list (gen/list gen/int))]
     (let [sorted-list (length-sort list-of-lists)]
-      (every? (fn [[x y]] (<= (count x) (count y))) (partition 2 sorted-list)))))
+      (every? (fn [[x y]] (<= (count x) (count y)))
+              (partition 2 sorted-list)))))
 
 
 
