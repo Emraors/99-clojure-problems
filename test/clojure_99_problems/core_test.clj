@@ -90,6 +90,19 @@
   (prop/for-all [list (gen/list gen/int)]
     (= list (decode (encode list)))))
 
+;; Test Problem 17: Split a list into two parts; the length of the first part is given.
+
+(defspec split-gives-two-lists 100
+  (prop/for-all [list (gen/list gen/int)]
+    (prop/for-all [n (gen/choose 0 (count list))]
+      (let [[first second] (split list n)]
+        (and (= (count first) n)
+             (= (count second) (- (count list) n)))))))
+
+;; Test problem 18: Extract a slice from a list
+
+
+
 ;; Test problem 19: Rotate a list N places to the left
 
 (defspec rotate-is-associative 100
